@@ -64,6 +64,8 @@ abstract class ApnsPHP_Abstract
 
 	protected $_hSocket; /**< @type resource SSL Socket. */
 
+    protected $_passphrase; /** @type string passphrase for pem certificate */
+
 	/**
 	 * Constructor.
 	 *
@@ -344,6 +346,9 @@ abstract class ApnsPHP_Abstract
 			'cafile' => $this->_sRootCertificationAuthorityFile,
 			'local_cert' => $this->_sProviderCertificateFile
 		)));
+        if (!empty($this->_passphrase)) {
+            stream_context_set_option($streamContext, 'ssl', 'passphrase', $this->_passphrase );
+        }
 
 		$this->_hSocket = @stream_socket_client($sURL, $nError, $sError,
 			$this->_nConnectTimeout, STREAM_CLIENT_CONNECT, $streamContext);
@@ -374,4 +379,24 @@ abstract class ApnsPHP_Abstract
 		}
 		$this->_logger->log($sMessage);
 	}
+
+    /**
+     * set passphrase
+     *
+     * @param $passphrase
+     */
+    public function setPassphrase($passphrase)
+    {
+        $this->_passphrase = (string)$passphrase;
+    }
+
+    /**
+     * get passphrase
+     *
+     * @return null | string
+     */
+    public function getPassphrase()
+    {
+        return $this->_passphrase;
+    }
 }
