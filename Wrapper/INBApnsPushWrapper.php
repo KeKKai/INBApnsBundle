@@ -34,6 +34,11 @@ class INBApnsPushWrapper
     protected  $root_certificate;
 
     /**
+     * @var string
+     */
+    protected $passphrase;
+
+    /**
      *
      * Construct object class for message
      *
@@ -74,6 +79,16 @@ class INBApnsPushWrapper
     }
 
     /**
+     * @param $passphrase
+     * @return INBApnsPushWrapper
+     */
+    public function setPassphrase($passphrase)
+    {
+        $this->passphrase = $passphrase;
+        return $this;
+    }
+
+    /**
      *
      * Create push object
      *
@@ -94,6 +109,9 @@ class INBApnsPushWrapper
         $push = new \ApnsPHP_Push($env, $this->certificate);
         if ($this->root_certificate){
             $push->setRootCertificationAuthority($this->root_certificate);
+        }
+        if (!empty($this->passphrase)) {
+            $push->setPassphrase($this->passphrase);
         }
         $push->connect();
         return $push;
